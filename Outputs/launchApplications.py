@@ -10,6 +10,7 @@ import os
 # webbrowser.open('https://mail.google.com/mail/u/0/')
 # webbrowser.open('https://sakai.claremont.edu/portal')
 # webbrowser.open('https://www.gradescope.com/')
+# subprocess.call(["/usr/bin/open", "-W", "-n", "-a", "/Applications/Spotify.app"])
 
 # for coding
 # webbrowser.open('https://github.com/')
