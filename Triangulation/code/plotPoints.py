@@ -6,8 +6,8 @@ import math
 
 import serial
 
-port = "'dev/tty.usbmodem1432'"
-ser = serial.Serial(, 9600, timeout = 5)
+port = "dev/tty.usbmodem1421"
+ser = serial.Serial(port, 9600, timeout = 5)
 
 def centroid(points):
     x_coords = [p[0] for p in points]
@@ -60,21 +60,29 @@ def triangulate(locations,deltas,material_speed):
 
 
 locations = [(0,0),(4,4),(0,5)]
-deltas = [0.000001,0.00000002]
 material_speed = 340
-
-pt,r = triangulate(locations,deltas,material_speed)
-xs = []
-ys = []
-mes_xs = []
-mes_ys = []
-mes_xs.append(pt[0])
-mes_ys.append(pt[1])
 
 xs = [a[0] for a in locations]
 ys = [b[1] for b in locations]
+mes_xs = []
+mes_ys = []
 
-plt.plot(mes_xs, mes_ys, 'ro')
-plt.plot(xs,ys,'bo')
-plt.axis([0, 6, 0, 20])
-plt.show()
+while(1):
+    times = [int(x) for x in ser.readline().strip().split(' ')]
+    if len(times) > 0:
+        times = [float(x)/(1000000.0) for x in times]
+        delta1 = times[1] - times[0]
+        deltas2 = times[2] - times[0]
+        deltas = [delta1,delta2]
+        pt,r = triangulate(locations,deltas,material_speed)
+
+
+        mes_xs.append(pt[0])
+        mes_ys.append(pt[1])
+
+        plt.clear()
+        print(pt,r)
+        plt.plot(mes_xs, mes_ys, 'ro')
+        plt.plot(xs,ys,'bo')
+        plt.axis([0, 6, 0, 20])
+        plt.show()
