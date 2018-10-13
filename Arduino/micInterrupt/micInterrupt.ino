@@ -8,6 +8,11 @@ const int ledC = 11;
 
 volatile int count = 0;
 unsigned long times[3];
+int order[3];
+
+static unsigned long last_interrupt_time = 0;
+unsigned long interrupt_time;
+volatile int detect = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -19,35 +24,70 @@ void setup() {
 
   // setting up mic's as inputs
   pinMode(micA, INPUT);
-  attachInterrupt(digitalPinToInterrupt(micA), interrupt, RISING);
+  attachInterrupt(digitalPinToInterrupt(micA), interruptA, RISING);
   pinMode(micB, INPUT);
-  attachInterrupt(digitalPinToInterrupt(micB), interrupt, RISING);
+  attachInterrupt(digitalPinToInterrupt(micB), interruptB, RISING);
   pinMode(micC, INPUT);
-  attachInterrupt(digitalPinToInterrupt(micC), interrupt, RISING);
+  attachInterrupt(digitalPinToInterrupt(micC), interruptC, RISING);
 }
 
 void loop() {
-//  delay(200); 
-}
-
-void interrupt() {
-  static unsigned long last_interrupt_time = 0;
-  unsigned long interrupt_time = millis();
-  if (interrupt_time - last_interrupt_time > 300) {
-  count++;
-  if (count < 3) {
-  interrupt_time = micros();  
-  times[count] = interrupt_time;
-  last_interrupt_time = interrupt_time;
-  count++;
-  } else {
+  
+//  delay(); 
+  //Serial.print("detect: ");
+  //Serial.println(detect);
+    if (detect==1) {
+     if (interrupt_time - last_interrupt_time > 1000) {
+      
+      last_interrupt_time = interrupt_time;
+      if (count < 3) {
+      interrupt_time = micros();  
+      times[count] = interrupt_time;
+      last_interrupt_time = interrupt_time;
+      } else {
     for (int i = 0; i < count; i++) {
-      Serial.print(times[count]);
+      Serial.print(times[i]);
       Serial.print(' ');
+    }
+    for (int i = 0; i < count; i++) {
+     Serial.print(order[i]);
+     Serial.print(' ');
     }
     Serial.println();
     count = 0;
   }
+
+  count++;
   }
-  last_interrupt_time = interrupt_time;
+
+    detect = 0;
+  
+    }
+}
+
+void interruptA() {
+  interrupt_time = millis();
+  detect = 1;
+  order[count] = 0;
+//  count++;
+ //Serial.println(count);
+ //last_interrupt_time = interrupt_time;
+}
+
+void interruptB() {
+  interrupt_time = millis();
+  detect = 1;
+   order[count] = 1;
+//   count++;
+ //Serial.println(count);
+ //last_interrupt_time = interrupt_time;
+}
+
+void interruptC() {
+  interrupt_time = millis();
+  detect = 1;
+   order[count] = 2;
+   
+ //Serial.println(count);
+ //last_interrupt_time = interrupt_time;
 }
