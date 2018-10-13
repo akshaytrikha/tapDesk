@@ -1,5 +1,5 @@
-import pandas as pd 
-import matplotlib.pyplot as plt 
+import pandas as pd
+import matplotlib.pyplot as plt
 
 csv = "data/titanic.csv"
 df = pd.read_csv(csv)
@@ -7,7 +7,7 @@ df = pd.read_csv(csv)
 survived = df.loc[:,'Survived']
 classNum = df.loc[:, 'Pclass']
 
-classSurvivalCount = [0,0,0,0,0,0] 
+classSurvivalCount = [0,0,0,0,0,0]
 c1Labels = 'class1Alive', 'class1Dead'
 c2Labels = 'class2Alive', 'class2Dead'
 c3Labels = 'class3Alive', 'class3Dead'

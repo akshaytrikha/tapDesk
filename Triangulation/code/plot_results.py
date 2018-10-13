@@ -9,6 +9,7 @@ Description : ML Comparison Plots
 import os
 import argparse
 import json
+import serial
 
 # pandas and pyplot modules
 import pandas as pd
@@ -18,6 +19,9 @@ import matplotlib.pyplot as plt
 import datasets
 import preprocessors
 import classifiers
+
+port = "/dev/tty.usbmodem"
+ser = serial.Serial(port, 9600, timeout = 5)
 
 ######################################################################
 # functions
@@ -37,7 +41,7 @@ def get_parser():
     # optional arguments
     if preprocessors.PREPROCESSORS:
         parser.add_argument("-p", "--preprocessor", dest="preprocessors",
-                            metavar="<preprocessor>", 
+                            metavar="<preprocessor>",
                             default=[], action="append",
                             choices=preprocessors.PREPROCESSORS,
                             help="[{}]".format(' | '.join(preprocessors.PREPROCESSORS)))
@@ -119,6 +123,6 @@ def main():
 
     # make plot
     plot(train_df, test_df, args.dataset, args.preprocessors)
-    
+
 if __name__ == "__main__":
     main()
